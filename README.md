@@ -2,6 +2,8 @@
 
 A multiplayer terminal game written in C using threads and sockets.
 
+![Game screenshot](demo.png)
+
 ## Gameplay
 The main objective of the game is to collect as many coins as possible and save them by going to the campsite. Other players may kill which will leave all your money behind and let others sweep it. There are also wild beasts, which hunt for players.
 
