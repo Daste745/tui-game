@@ -1,4 +1,4 @@
-# CLI Multiplayer Game
+# TUI Multiplayer Game
 
 A multiplayer terminal game written in C using threads and sockets.
 
