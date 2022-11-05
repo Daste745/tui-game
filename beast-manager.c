@@ -1,28 +1,25 @@
-#include <stdlib.h>
 #include <pthread.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
-#include "util/socket.h"
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
 #include "config.h"
 #include "util/api.h"
+#include "util/socket.h"
 
 #define BETWEEN(n, lower, upper) (lower <= n && n <= upper)
-
 
 bool beast_manager_active = true;
 ClientInfo** beast_client_info;
 
-
 // Calculates the sign of an int
-int sign(int x) {
-    return (x > 0) - (x < 0);
-}
+int sign(int x) { return (x > 0) - (x < 0); }
 
 // Runs in beast->thread, simulates a beast
-void runBeast (ClientInfo* client_info) {
+void runBeast(ClientInfo* client_info) {
     int sock = getClientSocket(HOST, PORT);
     if (sock <= 0) {
         pthread_exit(NULL);
@@ -34,7 +31,7 @@ void runBeast (ClientInfo* client_info) {
     // Join the game
     sendCommand(sock, JOIN, BEAST);
     recv(sock, buffer, sizeof(buffer), 0);
-    if ((Response) buffer[0] == SERVER_FULL) {
+    if ((Response)buffer[0] == SERVER_FULL) {
         pthread_exit(NULL);
     }
 
@@ -42,7 +39,7 @@ void runBeast (ClientInfo* client_info) {
     char world_size[2];
     sendCommand(sock, WORLD_SIZE, 0);
     recv(sock, world_size, sizeof(world_size), 0);
-    World _world = emptyWorld((int) world_size[0] + 1, (int) world_size[1] + 1);
+    World _world = emptyWorld((int)world_size[0] + 1, (int)world_size[1] + 1);
     populateWorldWithAir(&_world);
 
     char map_data[MAP_DATA_SIZE(_world)];
@@ -72,7 +69,8 @@ void runBeast (ClientInfo* client_info) {
         bool can_see_player = false;
         if (player_in_range != NULL) {
             // Calculate the offset between player and beast
-            // We leave the sign, so it's easier to determine in which direction to look later
+            // We leave the sign, so it's easier to determine in which direction to look
+            // later
 
             int y_offset = player_in_range->pos_y - beast->pos_y;
             int x_offset = player_in_range->pos_x - beast->pos_x;
@@ -93,19 +91,19 @@ void runBeast (ClientInfo* client_info) {
             // 4 - check tile next to player that could cover them
 
             if (BETWEEN(y_offset, -1, 1) && BETWEEN(x_offset, -1, 1)) {  // 1
-                vertical_direction   = (sign(y_offset) == 1) ? DOWN : UP;
+                vertical_direction = (sign(y_offset) == 1) ? DOWN : UP;
                 horizontal_direction = (sign(x_offset) == 1) ? RIGHT : LEFT;
                 can_see_player = true;
-            } else if ((abs_y_offset == 2  ^ abs_x_offset == 2)     // 2
-                   ||  (abs_y_offset == 2 && abs_x_offset == 2)     // 3
-                   ||  (abs_y_offset == 1 && abs_x_offset == 2)     // 4
-                   ||  (abs_y_offset == 2 && abs_x_offset == 1)) {  // 4
+            } else if ((abs_y_offset == 2 ^ abs_x_offset == 2)         // 2
+                       || (abs_y_offset == 2 && abs_x_offset == 2)     // 3
+                       || (abs_y_offset == 1 && abs_x_offset == 2)     // 4
+                       || (abs_y_offset == 2 && abs_x_offset == 1)) {  // 4
                 int check_y = beast->pos_y + sign(y_offset);
                 int check_x = beast->pos_x + sign(x_offset);
 
                 // Check tile in front of player (tile between beast and player)
                 if (_world.tiles[check_y][check_x].id != WALL) {
-                    vertical_direction   = (sign(y_offset) == 1) ? DOWN : UP;
+                    vertical_direction = (sign(y_offset) == 1) ? DOWN : UP;
                     horizontal_direction = (sign(x_offset) == 1) ? RIGHT : LEFT;
                     can_see_player = true;
                 }
@@ -115,7 +113,7 @@ void runBeast (ClientInfo* client_info) {
         Direction move_direction;
         if (!can_see_player) {
             // No player in sight - move randomly
-            move_direction = (Direction) (rand() % 4);
+            move_direction = (Direction)(rand() % 4);
         } else {
             int choice = rand() % 2;
             if (choice == 0) {
@@ -133,7 +131,7 @@ void runBeast (ClientInfo* client_info) {
 }
 
 // Spawns new beast thread
-void handleSIGUSR1 () {
+void handleSIGUSR1() {
     for (int i = 0; i < MAX_BEASTS; i++) {
         if (beast_client_info[i] != NULL) {
             continue;
@@ -148,7 +146,7 @@ void handleSIGUSR1 () {
 }
 
 // Cancels all beast threads and sets beast_manager_active=false
-void handleSIGUSR2 () {
+void handleSIGUSR2() {
     for (int i = 0; i < MAX_BEASTS; i++) {
         if (beast_client_info[i] == NULL) {
             continue;
@@ -162,7 +160,7 @@ void handleSIGUSR2 () {
 }
 
 // Runs as beast manager process
-void beastManager () {
+void beastManager() {
     srand(time(NULL) * 100);
 
     beast_client_info = malloc(sizeof(ClientInfo) * MAX_BEASTS);

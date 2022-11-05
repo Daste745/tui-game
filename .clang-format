@@ -1,0 +1,11 @@
+BasedOnStyle: Google,
+IndentWidth: 4,
+Cpp11BracedListStyle: false,
+SpaceInEmptyBlock: true,
+IndentPPDirectives: BeforeHash,
+ColumnLimit: 88,
+AlignArrayOfStructures: Left,
+AlignAfterOpenBracket: BlockIndent,
+BinPackArguments: false,
+BinPackParameters: false,
+AlignConsecutiveMacros: Consecutive

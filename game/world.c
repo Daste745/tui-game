@@ -1,10 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "../util/image.h"
 #include "world.h"
 
-World emptyWorld (int height, int width) {
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "../util/image.h"
+
+World emptyWorld(int height, int width) {
     World world = {
         .size_y = height,
         .size_x = width,
@@ -28,7 +30,7 @@ World emptyWorld (int height, int width) {
     return world;
 }
 
-int populateWorld (World* world, Image map) {
+int populateWorld(World* world, Image map) {
     int ntiles = 0;
 
     for (int y = 0; y < map.height; y++) {
@@ -56,7 +58,7 @@ int populateWorld (World* world, Image map) {
     return ntiles;
 }
 
-int populateWorldWithAir (World* world) {
+int populateWorldWithAir(World* world) {
     int ntiles = 0;
 
     for (int y = 0; y < world->size_y; y++) {
@@ -69,7 +71,7 @@ int populateWorldWithAir (World* world) {
     return ntiles;
 }
 
-void printWorld (World world) {
+void printWorld(World world) {
     for (int y = 0; y < world.size_y; y++) {
         for (int x = 0; x < world.size_x; x++) {
             bool printed_entity = false;
@@ -105,8 +107,8 @@ void printWorld (World world) {
     }
 }
 
-char* playerTypeString (PlayerType type) {
-    switch ((PlayerType) type) {
+char* playerTypeString(PlayerType type) {
+    switch ((PlayerType)type) {
         case HUMAN:
             return "HUMAN";
         case CPU:
@@ -116,14 +118,20 @@ char* playerTypeString (PlayerType type) {
     }
 }
 
-void printOnePlayerDetails (Player* player) {
+void printOnePlayerDetails(Player* player) {
     printf("Y/X \tCarry \tBudget \tDeaths \tType\n");
-    printf("%d/%d \t%d \t%d \t%d \t%s\n",
-           player->pos_y, player->pos_x, player->carrying,
-           player->budget, player->deaths, playerTypeString(player->type));
+    printf(
+        "%d/%d \t%d \t%d \t%d \t%s\n",
+        player->pos_y,
+        player->pos_x,
+        player->carrying,
+        player->budget,
+        player->deaths,
+        playerTypeString(player->type)
+    );
 }
 
-void printPlayerDetails (World world) {
+void printPlayerDetails(World world) {
     printf("Player \tPort \tY/X \tCarry \tBudget \tDeaths \tType\n");
 
     for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -134,18 +142,26 @@ void printPlayerDetails (World world) {
 
         Player player = *world.players[i];
 
-        printf("[%d] \t%d \t%d/%d \t%d \t%d \t%d \t%s\n",
-               i + 1, player.port, player.pos_y, player.pos_x, player.carrying,
-               player.budget, player.deaths, playerTypeString(player.type));
+        printf(
+            "[%d] \t%d \t%d/%d \t%d \t%d \t%d \t%s\n",
+            i + 1,
+            player.port,
+            player.pos_y,
+            player.pos_x,
+            player.carrying,
+            player.budget,
+            player.deaths,
+            playerTypeString(player.type)
+        );
     }
 }
 
-void randomCoordinates (World world, int* pos_y, int* pos_x) {
+void randomCoordinates(World world, int* pos_y, int* pos_x) {
     *pos_y = rand() % world.size_y;
     *pos_x = rand() % world.size_x;
 }
 
-void randomFreeCoordinates (World world, int* pos_y, int* pos_x) {
+void randomFreeCoordinates(World world, int* pos_y, int* pos_x) {
     int y, x;
 
     // Don't try more than 100 coordinates
@@ -179,7 +195,7 @@ void randomFreeCoordinates (World world, int* pos_y, int* pos_x) {
     *pos_x = x;
 }
 
-Player* addPlayer (World* world, int pos_y, int pos_x, PlayerType type) {
+Player* addPlayer(World* world, int pos_y, int pos_x, PlayerType type) {
     if (pos_y > world->size_y || pos_x > world->size_x) {
         return NULL;
     }
@@ -188,18 +204,18 @@ Player* addPlayer (World* world, int pos_y, int pos_x, PlayerType type) {
         if (world->players[i] == NULL) {
             world->players[i] = malloc(sizeof(Player));
             Player* player = world->players[i];
-            *player = (Player) {
-                    .pos_y = pos_y,
-                    .pos_x = pos_x,
-                    // Save the original spawn location as the respawn point
-                    .res_y = pos_y,
-                    .res_x = pos_x,
-                    .bush_timer = 0,
-                    .carrying = 0,
-                    .budget = 0,
-                    .deaths = 0,
-                    .type = type,
-                    .queued_action = NULL,
+            *player = (Player){
+                .pos_y = pos_y,
+                .pos_x = pos_x,
+                // Save the original spawn location as the respawn point
+                .res_y = pos_y,
+                .res_x = pos_x,
+                .bush_timer = 0,
+                .carrying = 0,
+                .budget = 0,
+                .deaths = 0,
+                .type = type,
+                .queued_action = NULL,
             };
 
             return player;
@@ -209,7 +225,7 @@ Player* addPlayer (World* world, int pos_y, int pos_x, PlayerType type) {
     return NULL;
 }
 
-Player* addBeast (World* world, int pos_y, int pos_x) {
+Player* addBeast(World* world, int pos_y, int pos_x) {
     if (pos_y > world->size_y || pos_x > world->size_x) {
         return NULL;
     }
@@ -218,7 +234,7 @@ Player* addBeast (World* world, int pos_y, int pos_x) {
         if (world->beasts[i] == NULL) {
             world->beasts[i] = malloc(sizeof(Player));
             Player* beast = world->beasts[i];
-            *beast = (Player) {
+            *beast = (Player){
                 .pos_y = pos_y,
                 .pos_x = pos_x,
                 .type = BEAST,
@@ -232,7 +248,7 @@ Player* addBeast (World* world, int pos_y, int pos_x) {
     return NULL;
 }
 
-int removePlayer (World* world, Player* player) {
+int removePlayer(World* world, Player* player) {
     for (int i = 0; i < MAX_PLAYERS; i++) {
         if (world->players[i] == NULL) {
             continue;
@@ -247,7 +263,7 @@ int removePlayer (World* world, Player* player) {
     return 0;
 }
 
-int removeBeast (World* world, Player* beast) {
+int removeBeast(World* world, Player* beast) {
     for (int i = 0; i < MAX_BEASTS; i++) {
         if (world->beasts[i] == NULL) {
             continue;
@@ -262,14 +278,14 @@ int removeBeast (World* world, Player* beast) {
     return 0;
 }
 
-void killPlayer (Player* player) {
+void killPlayer(Player* player) {
     player->pos_y = player->res_y;
     player->pos_x = player->res_x;
     player->carrying = 0;
     player->deaths++;
 }
 
-int countPlayers (World world) {
+int countPlayers(World world) {
     int n = 0;
 
     for (int i = 0; i < MAX_PLAYERS; i++) {
@@ -281,7 +297,7 @@ int countPlayers (World world) {
     return n;
 }
 
-int countBeasts (World world) {
+int countBeasts(World world) {
     int n = 0;
 
     for (int i = 0; i < MAX_BEASTS; i++) {
@@ -293,14 +309,14 @@ int countBeasts (World world) {
     return n;
 }
 
-bool inVisionRange (int pos_y, int pos_x, int y, int x) {
-    return (y <= pos_y + VISION_RANGE
-         && y >= pos_y - VISION_RANGE
-         && x <= pos_x + VISION_RANGE
-         && x >= pos_x - VISION_RANGE);
+bool inVisionRange(int pos_y, int pos_x, int y, int x) {
+    return (
+        y <= pos_y + VISION_RANGE && y >= pos_y - VISION_RANGE &&
+        x <= pos_x + VISION_RANGE && x >= pos_x - VISION_RANGE
+    );
 }
 
-int movePlayer (World world, Player* player, Direction direction) {
+int movePlayer(World world, Player* player, Direction direction) {
     int y = player->pos_y, x = player->pos_x;
 
     switch (direction) {
@@ -321,7 +337,7 @@ int movePlayer (World world, Player* player, Direction direction) {
     }
 
     // The tile at desired location
-    Tile *tile = &world.tiles[y][x];
+    Tile* tile = &world.tiles[y][x];
 
     // Don't let players through walls
     if (tile->id == WALL) {
@@ -329,7 +345,7 @@ int movePlayer (World world, Player* player, Direction direction) {
     }
 
     // The entity that our player will collide with (nullable)
-    Player *colliding_entity = NULL;
+    Player* colliding_entity = NULL;
     for (int i = 0; i < MAX_PLAYERS; i++) {
         if (world.players[i] == NULL) continue;
         if (world.players[i]->pos_y == y && world.players[i]->pos_x == x) {
@@ -355,8 +371,8 @@ int movePlayer (World world, Player* player, Direction direction) {
             // Don't allow players into occupied bushes
             return -3;
         }
-        if (colliding_entity->res_y == colliding_entity->pos_y
-        &&  colliding_entity->res_x == colliding_entity->pos_x) {
+        if (colliding_entity->res_y == colliding_entity->pos_y &&
+            colliding_entity->res_x == colliding_entity->pos_x) {
             // Don't allow spawn kills
             return -4;
         }
@@ -397,7 +413,8 @@ int movePlayer (World world, Player* player, Direction direction) {
         killPlayer(player);
     } else if (player->bush_timer != 1 && player->bush_timer != 2) {
         // bush_timer=1 is the state whenever a player has just entered a bush, so
-        // 0 means they are moving normally and >2 means they have waited at least one tick
+        // 0 means they are moving normally and >2 means they have waited at least one
+        // tick
         player->pos_y = y;
         player->pos_x = x;
     }
@@ -415,10 +432,9 @@ int movePlayer (World world, Player* player, Direction direction) {
     return 0;
 }
 
-int addCollectible (World* world, int pos_y, int pos_x, TileID collectible) {
-    if (collectible != COIN
-    &&  collectible != TREASURE
-    &&  collectible != LARGE_TREASURE) {
+int addCollectible(World* world, int pos_y, int pos_x, TileID collectible) {
+    if (collectible != COIN && collectible != TREASURE &&
+        collectible != LARGE_TREASURE) {
         return -1;
     }
 
@@ -432,7 +448,7 @@ int addCollectible (World* world, int pos_y, int pos_x, TileID collectible) {
     return 0;
 }
 
-int addCollectibleRandomly (World* world, TileID collectible) {
+int addCollectibleRandomly(World* world, TileID collectible) {
     int y, x;
     randomFreeCoordinates(*world, &y, &x);
 

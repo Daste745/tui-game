@@ -1,6 +1,8 @@
 #ifndef GAME_ENTITY_H
 #define GAME_ENTITY_H
 
+#include <pthread.h>
+
 typedef enum PlayerType {
     HUMAN,
     CPU,
@@ -35,4 +37,4 @@ typedef struct Player {
     pthread_t thread;
 } Player;
 
-#endif //GAME_ENTITY_H
+#endif  // GAME_ENTITY_H

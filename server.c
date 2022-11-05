@@ -130,9 +130,16 @@ void gameLoop() {
         // Render
         system("clear");
         printWorld(world);
-        printf("\nTick: %d \tWorld size: %dx%d\nPlayers: %d/%d\tBeasts: %d/%d\n\n",
-               tick, world.size_y, world.size_x, countPlayers(world), MAX_PLAYERS,
-               countBeasts(world), MAX_BEASTS);
+        printf(
+            "\nTick: %d \tWorld size: %dx%d\nPlayers: %d/%d\tBeasts: %d/%d\n\n",
+            tick,
+            world.size_y,
+            world.size_x,
+            countPlayers(world),
+            MAX_PLAYERS,
+            countBeasts(world),
+            MAX_BEASTS
+        );
         printPlayerDetails(world);
 
         // Post render
@@ -168,9 +175,12 @@ long sendMapData(int sock, Player* player) {
     for (int i = 0; i < MAX_PLAYERS; i++) {
         int index = players_offset + i * 4 + i * ((int)sizeof(int) * 2);
 
-        if (world.players[i] == NULL ||
-            !inVisionRange(player->pos_y, player->pos_x, world.players[i]->pos_y,
-                           world.players[i]->pos_x)) {
+        if (world.players[i] == NULL || !inVisionRange(
+                                            player->pos_y,
+                                            player->pos_x,
+                                            world.players[i]->pos_y,
+                                            world.players[i]->pos_x
+                                        )) {
             // Send -1/-1 y/x to indicate that this data is invalid and the requester
             // can't see this player
             data[index] = (char)-1;
@@ -191,8 +201,9 @@ long sendMapData(int sock, Player* player) {
             // Memcpy nicely copies raw bytes of an int to a char
             // Which is necessary here, as we often handle values larger than 128
             memcpy(&data[index + 4], &world.players[i]->carrying, sizeof(int));
-            memcpy(&data[index + 4 + sizeof(int)], &world.players[i]->budget,
-                   sizeof(int));
+            memcpy(
+                &data[index + 4 + sizeof(int)], &world.players[i]->budget, sizeof(int)
+            );
         } else {
             // -1 are later printed as '?' to let players know they don't have access to
             // this info
@@ -210,9 +221,12 @@ long sendMapData(int sock, Player* player) {
     for (int i = 0; i < MAX_BEASTS; i++) {
         int index = beasts_offset + i * 2;
 
-        if (world.beasts[i] == NULL ||
-            !inVisionRange(player->pos_y, player->pos_x, world.beasts[i]->pos_y,
-                           world.beasts[i]->pos_x)) {
+        if (world.beasts[i] == NULL || !inVisionRange(
+                                           player->pos_y,
+                                           player->pos_x,
+                                           world.beasts[i]->pos_y,
+                                           world.beasts[i]->pos_x
+                                       )) {
             data[index] = (char)-1;
             data[index + 1] = (char)-1;
             continue;
@@ -239,8 +253,15 @@ void waitForClientConnection() {
     // Get client connection info
     char hoststr[NI_MAXHOST];
     char portstr[NI_MAXSERV];
-    getnameinfo((struct sockaddr*)&client, client_len, hoststr, sizeof(hoststr),
-                portstr, sizeof(portstr), NI_NUMERICHOST | NI_NUMERICSERV);
+    getnameinfo(
+        (struct sockaddr*)&client,
+        client_len,
+        hoststr,
+        sizeof(hoststr),
+        portstr,
+        sizeof(portstr),
+        NI_NUMERICHOST | NI_NUMERICSERV
+    );
     int port = (int)strtol(portstr, NULL, 10);
     ClientInfo client_info = {
         .socket = client_socket,
@@ -393,8 +414,9 @@ int main() {
         // Double check if the server is still server_active
         // This prevents a SEGFAULT during server shutdown
         if (server_active) {
-            pthread_create(&client_info->thread, NULL, (void*)handleClientConnection,
-                           client_info);
+            pthread_create(
+                &client_info->thread, NULL, (void*)handleClientConnection, client_info
+            );
         }
     }
 

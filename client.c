@@ -1,27 +1,30 @@
+#include <pthread.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/socket.h>
-#include <stdbool.h>
 #include <termios.h>
-#include <pthread.h>
-#include "util/socket.h"
-#include "util/api.h"
+#include <unistd.h>
+
+#include "config.h"
 #include "game/entity.h"
 #include "game/world.h"
-#include "config.h"
+#include "util/api.h"
+#include "util/socket.h"
 
-#define ERROR(msg) { perror(msg); exit(EXIT_FAILURE); }
-
+#define ERROR(msg)          \
+    {                       \
+        perror(msg);        \
+        exit(EXIT_FAILURE); \
+    }
 
 World world;
 bool connected = true;
 pthread_t render_thread;
 int client_socket;
 
-
-void render () {
+void render() {
     char map_data[MAP_DATA_SIZE(world)];
     Player *player = malloc(sizeof(Player));
 
@@ -43,7 +46,7 @@ void render () {
     pthread_exit(NULL);
 }
 
-int main () {
+int main() {
     client_socket = getClientSocket(HOST, PORT);
     if (client_socket == -1) {
         ERROR("Error opening socket")
@@ -58,7 +61,7 @@ int main () {
     // Join the game
     sendCommand(client_socket, JOIN, HUMAN);
     recv(client_socket, buffer, sizeof(buffer), 0);
-    if ((Response) buffer[0] == SERVER_FULL) {
+    if ((Response)buffer[0] == SERVER_FULL) {
         ERROR("Server is full, cannot join")
     }
 
@@ -67,7 +70,7 @@ int main () {
     sendCommand(client_socket, WORLD_SIZE, 0);
     recv(client_socket, world_size, sizeof(world_size), 0);
     // World size is sent as 1 lower, so we need to adjust for it here
-    world = emptyWorld((int) world_size[0] + 1, (int) world_size[1] + 1);
+    world = emptyWorld((int)world_size[0] + 1, (int)world_size[1] + 1);
     populateWorldWithAir(&world);
 
     // Render loop
@@ -111,7 +114,7 @@ int main () {
         memset(buffer, 0, sizeof(buffer));
         recv(client_socket, buffer, sizeof(buffer), 0);
 
-        Response response = (Response) buffer[0];
+        Response response = (Response)buffer[0];
 
         if (response == REMOVED) {
             connected = false;

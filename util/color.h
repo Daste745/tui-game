@@ -10,4 +10,4 @@
 #define FG_CYAN    "\x1B[36m"
 #define FG_GRAY    "\x1B[37m"
 
-#endif //UTIL_COLOR_H
+#endif  // UTIL_COLOR_H

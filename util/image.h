@@ -14,7 +14,7 @@ typedef struct Image {
     Pixel** pixels;
 } Image;
 
-int pixelValue (Pixel pixel);
-Image loadPPM (char* filename);
+int pixelValue(Pixel pixel);
+Image loadPPM(char* filename);
 
-#endif //UTIL_IMAGE_H
+#endif  // UTIL_IMAGE_H

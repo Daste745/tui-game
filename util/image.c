@@ -1,12 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "image.h"
 
-int pixelValue (Pixel pixel) {
-    return (pixel.r << 16) + (pixel.g << 8) + pixel.b;
-}
+#include <stdio.h>
+#include <stdlib.h>
 
-Image loadPPM (char* filename) {
+int pixelValue(Pixel pixel) { return (pixel.r << 16) + (pixel.g << 8) + pixel.b; }
+
+Image loadPPM(char* filename) {
     FILE* file = fopen(filename, "r");
     Image image;
 
