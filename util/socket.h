@@ -1,5 +1,4 @@
-#ifndef CLIENT_SOCKET_H
-#define CLIENT_SOCKET_H
+#pragma once
 
 #include <pthread.h>
 
@@ -11,5 +10,3 @@ typedef struct ClientInfo {
 
 int getServerSocket(int port);
 int getClientSocket(char* hostname, int port);
-
-#endif  // CLIENT_SOCKET_H

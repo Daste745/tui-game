@@ -1,5 +1,4 @@
-#ifndef IPC_COMMAND_H
-#define IPC_COMMAND_H
+#pragma once
 
 #include "../game/world.h"
 
@@ -23,5 +22,3 @@ long sendResponse(int sock, Response response);
 
 // Loads map_data[MAP_DATA_SIZE(world)] bytes into world and current player into player
 int loadMapData(const char* map_data, World* world, Player* player);
-
-#endif  // IPC_COMMAND_H

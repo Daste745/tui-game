@@ -1,5 +1,5 @@
-#ifndef GAME_WORLD_H
-#define GAME_WORLD_H
+#pragma once
+
 
 #include <stdbool.h>
 
@@ -53,5 +53,3 @@ int movePlayer(World world, Player* player, Direction direction);
 
 int addCollectible(World* world, int pos_y, int pos_x, TileID collectible);
 int addCollectibleRandomly(World* world, TileID collectible);
-
-#endif  // GAME_WORLD_H

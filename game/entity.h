@@ -1,5 +1,4 @@
-#ifndef GAME_ENTITY_H
-#define GAME_ENTITY_H
+#pragma once
 
 #include <pthread.h>
 
@@ -37,4 +36,3 @@ typedef struct Player {
     pthread_t thread;
 } Player;
 
-#endif  // GAME_ENTITY_H

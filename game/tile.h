@@ -1,5 +1,4 @@
-#ifndef GAME_TILE_H
-#define GAME_TILE_H
+#pragma once
 
 typedef struct Tile {
     int id;
@@ -31,5 +30,3 @@ static const Tile tiles[] = {
     [CAMPSITE]       = { CAMPSITE,       "A", FG_MAGENTA, 0  },
 };
 // clang-format on
-
-#endif  // GAME_TILE_H

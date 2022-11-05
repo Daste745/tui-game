@@ -1,5 +1,4 @@
-#ifndef UTIL_IMAGE_H
-#define UTIL_IMAGE_H
+#pragma once
 
 typedef struct Pixel {
     int r;
@@ -17,4 +16,3 @@ typedef struct Image {
 int pixelValue(Pixel pixel);
 Image loadPPM(char* filename);
 
-#endif  // UTIL_IMAGE_H
