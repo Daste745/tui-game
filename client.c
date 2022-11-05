@@ -71,7 +71,7 @@ int main () {
     populateWorldWithAir(&world);
 
     // Render loop
-    pthread_create(&render_thread, NULL, render, NULL);
+    pthread_create(&render_thread, NULL, (void *)render, NULL);
 
     // Keyboard handler
     struct termios old_term_settings, new_term_settings;

@@ -371,10 +371,10 @@ int main() {
     }
 
     // Game loop
-    pthread_create(&game_thread, NULL, gameLoop, NULL);
+    pthread_create(&game_thread, NULL, (void*)gameLoop, NULL);
 
     // Keyboard handler
-    pthread_create(&keyboard_thread, NULL, keyboardHandler, NULL);
+    pthread_create(&keyboard_thread, NULL, (void*)keyboardHandler, NULL);
 
     // This loop waits for a new client connection, then:
     // - Rejects it if the server is full (countPlayers(world) >= MAX_PLAYERS)
@@ -382,8 +382,8 @@ int main() {
     while (server_active) {
         // Create a waiter thread and wait for new client connections
         ClientInfo* client_info;
-        pthread_create(&waiter_thread, NULL, waitForClientConnection, NULL);
-        pthread_join(waiter_thread, &client_info);
+        pthread_create(&waiter_thread, NULL, (void*)waitForClientConnection, NULL);
+        pthread_join(waiter_thread, (void**)&client_info);
 
         if (client_info == NULL) {
             printf("Connection on port %d failed\n", client_info->port);
@@ -393,7 +393,7 @@ int main() {
         // Double check if the server is still server_active
         // This prevents a SEGFAULT during server shutdown
         if (server_active) {
-            pthread_create(&client_info->thread, NULL, handleClientConnection,
+            pthread_create(&client_info->thread, NULL, (void*)handleClientConnection,
                            client_info);
         }
     }

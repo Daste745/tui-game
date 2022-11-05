@@ -149,10 +149,10 @@ int main () {
     populateWorldWithAir(&world);
 
     // Render loop
-    pthread_create(&render_thread, NULL, render, NULL);
+    pthread_create(&render_thread, NULL, (void*)render, NULL);
 
     // Keyboard handler (used only for quitting)
-    pthread_create(&keyboard_thread, NULL, keyboardHandler, NULL);
+    pthread_create(&keyboard_thread, NULL, (void*)keyboardHandler, NULL);
 
     pthread_join(render_thread, NULL);
     pthread_join(keyboard_thread, NULL);

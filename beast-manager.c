@@ -139,8 +139,8 @@ void handleSIGUSR1 () {
             continue;
         }
 
-        ClientInfo *client_info = &(ClientInfo) { };
-        pthread_create(&client_info->thread, NULL, runBeast, client_info);
+        ClientInfo* client_info = &(ClientInfo){};
+        pthread_create(&client_info->thread, NULL, (void*)runBeast, client_info);
         beast_client_info[i] = client_info;
 
         break;
