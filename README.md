@@ -33,7 +33,7 @@ The server tries to handle every client's request asynchronously in separate thr
 ## Building
 Generate build files:
 ```
-cmake -B .
+cmake -B build
 ```
 Then build binaries:
 ```
